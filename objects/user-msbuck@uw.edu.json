@@ -1,0 +1,10 @@
+{
+    "email":"msbuck@uw.edu",
+    "first_name":"Michael",
+    "last_name":"Buckley",
+    "job_title":"Submitter",
+    "lab":"/labs/john-stamatoyannopoulos/",
+    "submits_for":["/labs/john-stamatoyannopoulos/",
+    		    "/labs/job-dekker/"],
+    "timezone":"US/Pacific"
+}

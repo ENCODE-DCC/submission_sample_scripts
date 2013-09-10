@@ -1,0 +1,11 @@
+{
+	"name":"U54HG007010",
+	"title":"A COMPREHENSIVE CATALOG OF DNASEL HYPERSENSITIVE SITES",
+	"start_date":"2012-09-21",
+	"end_date":"2014-07-31",
+	"pi":"/users/jstam@u.washington.edu/",
+	"project":"ENCODE",
+	"rfa":"ENCODE3",
+	"url":"http://projectreporter.nih.gov/project_info_details.cfm?aid=8402670",
+	"description":"The overall aim of this proposal is to establish a comprehensive, high-quality, high-resolution catalogues of human and mouse DNasel hypersensitive sites (DHSs) spanning all major tissue lineages. Building on the prior success of the UW ENCODE center, we plan to localize DNasel hypersensitive sites, to define the locations of DNasel footprints therein, and to continue to provide relevant synergistic annotations including RNA-seq, histone modifications, and CTCF, as well as DNA methylation. The overriding focus of our production effort has been on data quality. Accordingly, samples will be rigorously screened in a pipeline fashion, with only a select set advancing to whole-genome data collection. To ensure the broadest possible coverage of both unique and non-unique genomic territories, we will employ a higher resolution, higher coverage sequencing strategy than the prior project period, significantly enhancing the information content of the data. This proposal integrates the UW-FHCRC Mouse ENCODE Center, which will be closely aligned with the human project to generate a comparative catalogue of regulatory DNA in carefully matched cells and tissues, providing an unparalleled resource. Since DNasel hypersensitive sites are generic markers of a broad spectrum of human cis-regulatory sequences, the utility of the catalogue will be greatly enhanced by the classification of DHSs into major functional categories including promoters, distal elements (enhancers, LCRs), and insulators. We plan to systematically connect distal DHSs with their cognate promoters and to perform in vivo validation of these connections using nuclease-mediated knockouts of distal DHSs in somatic cells."
+}
