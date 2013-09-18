@@ -66,7 +66,6 @@ if __name__ == "__main__":
         u'biosample_term_name': 'fibroblast of dermis',
         u'target':              'H3K27me3-human',    #or /targets/9fdbd27b-4118-4851-b566-87d77d467d79/
         #u'aliases':             None, 
-        u'submitted_by':        'noamshoresh@gmail.com', #or /users/f1843c60-e027-4b18-8582-64d3f3eae45b/
         #u'date_created':        None,
         u'references':          ['PMID:22955991'], 
         u'geo_dbxrefs':         ['GSM999999'],
@@ -74,8 +73,7 @@ if __name__ == "__main__":
         u'documents':           ['ENCODE:NHDF-Ad_Bernstein_protocol'], #or /documents/f651422a-d5f1-4cb9-b787-2bc579a329f3/
         #u'files':               None, 
         u'is_current':          True,
-        u'schema-version':      '0.01', 
-        u'accession':           'ENCSR999BRO', #normally assigned automatically or PATCHED later by a wrangler
+        #u'accession':           'ENCSR999BRO', #normally assigned automatically or PATCHED later by a wrangler
         #u'alternate_accessions': None, 
         #u'uuid': None, 
         }
