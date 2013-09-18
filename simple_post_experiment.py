@@ -59,13 +59,13 @@ if __name__ == "__main__":
         u'award':               'U54HG006991',       #or /awards/4621616e-faba-4c60-b7b9-1cd9e5627025/
         #u'possible_controls':   None, 
         u'description':         'TEST1 ChIP-seq for H3K27me3 in human dermal fibroblasts.',
+        u'aliases':             ['bradley-bernstein:LIMSID_a1b123'],
         u'assay_term_name':     'ChIP-seq',
         u'assay_term_id':       'OBI:0000716',
         u'biosample_type':      'primary cell line',
         u'biosample_term_id':   'CL:0002551',
         u'biosample_term_name': 'fibroblast of dermis',
         u'target':              'H3K27me3-human',    #or /targets/9fdbd27b-4118-4851-b566-87d77d467d79/
-        #u'aliases':             None, 
         #u'date_created':        None,
         u'references':          ['PMID:22955991'], 
         u'geo_dbxrefs':         ['GSM999999'],
