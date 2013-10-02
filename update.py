@@ -76,18 +76,19 @@ if __name__ == "__main__":
     # run for each object in objects folder
     for object_filename in object_filenames:
 
-        # define object parameters
-        object_type,object_name = object_filename.strip('.json').split('-')
-        object_file = ('objects/' + object_type + '-' + object_name + '.json')
+        # define object parameters.  SHOULD NOT RELY ON FILENAME.  NEED WAY TO IDENTIFY OBJECT TYPE/NAME BY REVIEWING DATA
+        object_type,object_name = object_filename.strip('.json').split(';')
+        object_file = ('objects/' + object_type + ';' + object_name + '.json')
         object_id = ('/' + object_type + 's/' + object_name + '/')
 
         # load object
         json_object = open(object_file)
         new_object = json.load(json_object)
         json_object.close()
-        
-        
-        #check to see if object already exists
+
+        # check to see if object already exists  
+        # PROBLEM: SHOULD CHECK UUID AND NOT USE ANY SHORTCUT METADATA THAT MIGHT NEED TO CHANGE
+        # BUT CAN'T USE UUID IF NEW... HENCE PROBLEM
         old_object = get_ENCODE(object_id)
 
         # if object is not found, verify and post it
@@ -96,18 +97,22 @@ if __name__ == "__main__":
             # get relevant schema
             object_schema = get_ENCODE(('/profiles/' + object_type + '.json'))
             
-            # test the new object.  SHOULD HANDLE ERRORS GRACEFULLY
-            if jsonschema.validate(new_object,object_schema):
-                
+            # test the new object.  SHOULD HANDLE ERRORS GRACEFULLY        
+            try:
+                jsonschema.validate(new_object,object_schema)
+            # did not validate
+            except Exception as e:
+                print('Validation of ' + object_id + ' failed.')
+                print(e)
+
+            # did validate
+            else:
                 # inform the user of the success
                 print('Validation of ' + object_id + ' succeeded.')
 
                 # post the new object(s).  SHOULD HANDLE ERRORS GRACEFULLY
                 response = new_ENCODE('/users/',new_object)
 
-            # inform the user of the failure.
-            else:
-                print('Validation of ' + object_id + ' failed.')
 
         # if object is found, check for differences and patch it if needed.
         else:
