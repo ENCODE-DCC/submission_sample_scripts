@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     patch_objects = read_objects(args.json_file)
 
-    for i in range(0,len(patch_objects)-1):
+    for i in range(0,len(patch_objects)):
         object_id = patch_objects[i]['@id']
         patch_object = filter_object(patch_objects[i], '@id')
         url = (settings.get('SERVER') + '/' + str(object_id))
