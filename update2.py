@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     for new_object in object_list:
         
-        new_object = FlatJSON(new_object)
+        new_object = FlatJSON(new_object,keys)
 
         # define object parameters.  NEEDS TO RUN A CHECK TO CONFIRM THESE EXIST FIRST.
         object_type = str(new_object[u'@type'][0])
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         # check to see if object already exists  
         # PROBLEM: SHOULD CHECK UUID AND NOT USE ANY SHORTCUT METADATA THAT MIGHT NEED TO CHANGE
         # BUT CAN'T USE UUID IF NEW... HENCE PROBLEM
-        old_object = FlatJSON(get_ENCODE(object_id))
+        old_object = FlatJSON(get_ENCODE(object_id,keys),keys)
 
 #        # test the validity of new object
 #        if not ValidJSON(object_type,object_id,new_object):
@@ -123,13 +123,13 @@ if __name__ == "__main__":
                 print('Validation of ' + object_id + ' succeeded.')
 
                 # post the new object(s).  SHOULD HANDLE ERRORS GRACEFULLY
-                response = new_ENCODE(object_collection,new_object)
+                response = new_ENCODE(object_collection,new_object,keys)
 
 
         # if object is found, check for differences and patch it if needed.
         else:
 
-            # compare new object to old one, remove identical fields.
+            # compare new object to old one, remove identical fields.  Also, remove fields not present in schema. SHOULD INFORM OF THIS OPERATION, BUT NOT NEEDED WHEN SINGLE PATCH CODE EXISTS.
             for key in new_object.keys():
                 if new_object.get(key) == old_object.get(key):
                     new_object.pop(key)
@@ -141,13 +141,14 @@ if __name__ == "__main__":
                 
                 # inform user of the updates
                 print(object_id + ' has updates.')
-                print(new_object)
+                #print(new_object)
                 
                 # patch each field to object individually
                 for key,value in new_object.items():
                     patch_single = {}
                     patch_single[key] = value
-                    response = patch_ENCODE(object_id, patch_single)
+                    print(patch_single)
+                    response = patch_ENCODE(object_id,patch_single,keys)
 
             # inform user there are no updates            
             else:

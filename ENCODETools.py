@@ -26,23 +26,26 @@ def GetENCODE(object_id,keys):
     '''GET an ENCODE object as JSON and return as dict'''
     if type(object_id) is str:
         url = keys['server']+object_id+'?limit=all'
-        print(url)
+        #print(url)
         try:
             response = requests.get(url, auth=(keys['authid'],keys['authpw']), headers=HEADERS)
-        # nope
+            if not response.status_code == 200:
+                print >> sys.stderr, response.text
+        # no
         except Exception as e:
             print("Get request failed:")
             #print(e)
+        # yes
         else:
             return response.json()
 
 
 # patch object to server
-def patch_ENCODE(obj_id, patch_json):
+def patch_ENCODE(obj_id,patch_json,keys):
     '''PATCH an existing ENCODE object and return the response JSON'''
     url = keys['server']+obj_id
     json_payload = json.dumps(patch_json)
-    response = requests.patch(url, auth=(keys['authid'],keys['pw']), data=json_payload)
+    response = requests.patch(url, auth=(keys['authid'],keys['authpw']), data=json_payload)
     print "Patch:"
     print response.status_code
     if not response.status_code == 200:
@@ -107,8 +110,8 @@ def ValidJSON(object_type,object_id,new_object):
         return True
 
 # intended to fix invalid JSON.  DOES NOT DO ANYTHING YET.
-def CleanJSON(object_type,object_id,new_object):
-    for key,value in new_object.list():
+def CleanJSON(object_type,object_id,new_object,keys):
+    for key,value in new_object.items():
         new_object.pop(key)
         if not ValidJSON(object_type,object_id,new_object):
             new_object[key] = value
@@ -121,15 +124,32 @@ def FlatJSON(json_object,keys):
     for key,value in json_object.items():
         if type(value) is dict:
             json_object[key] = json_object[key][u'@id']
+        if type(value) is list:
+            #print("Found List: " + key)
+            value_new = []
+            for value_check in value:
+                #print("Checking...")
+                if type(value_check) is dict:
+                    #print("Found Object")
+                    value_check = value_check[u'@id']
+                    #print(value_check)
+                value_new.append(value_check)
+            json_object[key] = value_new
     return json_object
 
 # expand json object
 def EmbedJSON(json_object,keys):
     for key,value in json_object.items():
+        value_list = []
         if type(value) is unicode:
-            if str(value[0]) == '/':
-                json_sub_object = GetENCODE(str(value),keys)
-                if type(json_sub_object) is dict:
-                    #json_sub_object = EmbedJSON(json_sub_object,keys)
-                    json_object[key] = json_sub_object
+            value_list.append(value)
+        elif type(value) is list:
+            value_list = value
+        for value_check in value_list:
+            if type(value_check) is unicode:
+                if str(value_check[0]) == '/':
+                    json_sub_object = GetENCODE(str(value_check),keys)
+                    if type(json_sub_object) is dict:
+                        #json_sub_object = EmbedJSON(json_sub_object,keys)
+                        json_object[key] = json_sub_object
     return json_object
