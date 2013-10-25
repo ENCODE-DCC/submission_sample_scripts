@@ -70,7 +70,7 @@ if __name__ == "__main__":
         'date_obtained':        '2012-12-20',
         'derived_from':         ['ENCBS016ENC'],
         'description':          'Some free-text description of this arbitrary nonsensical test biosample',
-        'donor':                'ENCDO000HUM',
+        'donor':                'ENCDO000HUM', #you would not normally use this generic donor object, but rather object for the real donor
         #'encode2_dbxrefs':      None,
         'health_status':        'Some free-text description of the health of the donor at the time of donation.',
         'lab':                  'j-michael-cherry',
