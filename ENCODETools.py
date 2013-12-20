@@ -1,17 +1,12 @@
-import os
 import sys
 import csv
 import json
 import jsonschema
 import requests
-import xlrd
-import xlwt
-from base64 import b64encode
-import gdata
 import gdata.spreadsheet.service
 
 
-# set headers.  UNCLEAR IF THIS IS USED PROPERLY
+# set headers
 HEADERS = {'content-type': 'application/json'}
 
 def get_ENCODE(obj_id,keys):
@@ -21,6 +16,23 @@ def get_ENCODE(obj_id,keys):
     if not response.status_code == 200:
         print >> sys.stderr, response.text
     return response.json()
+
+def GetENCODE(object_id,keys):
+    '''GET an ENCODE object as JSON and return as dict'''
+    if type(object_id) is str:
+        url = keys['server']+object_id+'?limit=all'
+        #print(url)
+        try:
+            response = requests.get(url,auth=(keys['authid'],keys['authpw']), headers=HEADERS)
+            if not response.status_code == 200:
+                print >> sys.stderr, response.text
+        # no
+        except Exception as e:
+            print("Get request failed:")
+            #print(e)
+        # yes
+        else:
+            return response.json()
 
 def patch_ENCODE(obj_id,patch_json,keys):
     '''PATCH an existing ENCODE object and return the response JSON'''
@@ -90,7 +102,7 @@ def ValidJSON(object_type,object_id,new_object,keys):
     '''
     # SHOULD ONLY NEED OBJECT.  NEED DEF TO EXTRACT VALUE (LIKE TYPE) FROM JSON OBJECT GRACEFULLY.
     # get the relevant schema
-    object_schema = get_ENCODE(('/profiles/' + object_type + '.json'),keys)
+    object_schema = GetENCODE(('/profiles/' + object_type + '.json'),keys)
 
     # test the new object.  SHOULD HANDLE ERRORS GRACEFULLY        
     try:
@@ -160,7 +172,7 @@ def EmbedJSON(json_object,keys):
         if (type(value) is unicode):
             if (len(value) > 1):
                 if str(value[0]) == '/':
-                    json_sub_object = get_ENCODE(str(value),keys)
+                    json_sub_object = GetENCODE(str(value),keys)
                     if type(json_sub_object) is dict:
                         #json_sub_object = EmbedJSON(json_sub_object,keys)
                         json_object[key] = json_sub_object
@@ -170,13 +182,100 @@ def EmbedJSON(json_object,keys):
                 if (type(entry) is unicode):
                     if (len(entry) > 1):
                         if str(entry[0]) == '/':
-                            json_sub_object = get_ENCODE(str(entry),keys)
+                            json_sub_object = GetENCODE(str(entry),keys)
                             if type(json_sub_object) is dict:
                                 #json_sub_object = EmbedJSON(json_sub_object,keys)
                                 values_embed.append(json_sub_object)
             if len(values_embed) is len(json_object[key]):
                 json_object[key] = values_embed
     return json_object
+
+def FindSets(jsonobjects,query,returnset):
+    '''
+    Find a set of objects that contain a particular key value pair in any part of the set.
+    
+    Input
+    jsonobjects: a list of JSON objects that will be searched.
+    This can either be a uniform collection or not, but each object
+    will be treated as a set.
+    query: a dict with key:value pair(s) to search for.
+    Currently, only works as an 'OR' search.
+    returnset: a string to indicate how to return values
+        'original': returns only root object
+        'only': returns only objects containing the match
+        'all': returns all objects from the set with the match
+    
+    Output
+    foundobjects: a list of JSON objects that match the search parameters.
+    otherobjects: a list of JSON objects that don't match.
+    '''
+    foundobjects = []
+    otherobjects = []
+    for jsonobject in jsonobjects:
+        if jsonobject.has_key(u'@id'):
+            subfoundobjects = []
+            subotherobjects = []
+            foundobject = False
+            querycheck = {}
+            #print('Checking...')
+            for key,value in jsonobject.items():
+                if type(value) is dict:
+                    #print('Dictionary')
+                    #print value
+                    [sfobjs,soobjs] = FindSets([value],query,returnset)
+                    if sfobjs:
+                        for sfobj in sfobjs:
+                            subfoundobjects.append(sfobj)
+                    if soobjs:
+                        for soobj in soobjs:
+                            subotherobjects.append(soobj)
+                elif value and (type(value) is list) and (type(value[0]) is dict):
+                    #print('Dictionary List')
+                    for item in value:
+                        [sfobjs,soobjs] = FindSets([item],query,returnset)
+                        if sfobjs:
+                            for sfobj in sfobjs:
+                                subfoundobjects.append(sfobj)
+                        if soobjs:
+                            for soobj in soobjs:
+                                subotherobjects.append(soobj)
+                elif value and ((type(value) is list) and (type(value[0]) is not dict)) or (type(value) is not dict) or (type(value) is not list):
+                    #print('Checking...')
+                    for searchkey,searchvalue in query.items():
+                        if searchkey in str(key):
+                            #print 'inkey',key,value
+                            if searchvalue in str(value):
+                                #print 'invalue',value
+                                querycheck.update({searchkey:searchvalue})
+
+            # CURRENTLY ONLY CHECKS FOR ANY HIT.  WORKS LIKE 'OR' INSTEAD OF 'AND'.
+            if querycheck:
+                #print 'Found.'
+                foundobject = True
+
+            if foundobject:
+                foundobjects.append(jsonobject)
+            elif subfoundobjects and ((returnset == 'all') or (returnset == 'original')):
+                foundobjects.append(jsonobject)
+            else:
+                otherobjects.append(jsonobject)
+    
+            if subfoundobjects and ((returnset == 'all') or (returnset == 'only')):
+                for subfoundobject in subfoundobjects:
+                    foundobjects.append(subfoundobject)
+    
+            if subfoundobjects and subotherobjects and (returnset == 'all'):
+                for subotherobject in subotherobjects:
+                    foundobjects.append(subotherobject)
+            else:
+                for subotherobject in subotherobjects:
+                    otherobjects.append(subotherobject)
+
+    if foundobjects:
+        foundobjects = {foundobj['@id']:foundobj for foundobj in foundobjects}.values()
+    if otherobjects:
+        otherobjects = {otherobj['@id']:otherobj for otherobj in otherobjects}.values()
+    return foundobjects,otherobjects
 
 def LoginGSheet(email,password):
     '''
