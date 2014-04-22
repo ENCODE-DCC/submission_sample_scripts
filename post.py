@@ -1,18 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: latin-1 -*-
-''' POST an object to an ENCODE server'''
+'''POST an object to an ENCODE server'''
 
 import sys, requests, json
 
-'''force return from the server in JSON format'''
+# Send and accept JSON format
 HEADERS = {'content-type': 'application/json', 'accept': 'application/json'}
+
+# Authentication is always required to PATCH ENCODE objects
 AUTHID = "H7OL67B4" #<- Replace this with your keypair
 AUTHPW = "lr5gz2fjowbaqox5" #<- Replace this with your keypair
 
-'''note that the URL is now the collection itself'''
+# The URL is now the collection itself
 URL = "http://test.encodedcc.org/experiments/"
 
-'''build a Python dict with the experiment metadata'''
+# Build a Python dict with the experiment metadata
 new_experiment = {
 	"description": "POST example experiment",
 	"assay_term_name": "ChIP-seq",
@@ -26,18 +28,17 @@ new_experiment = {
 	]
 }
 
-'''serialize the data structure as JSON'''
+# Serialize the data structure as JSON
 json_payload = json.dumps(new_experiment)
 
-'''POST the JSON and print the response'''
+# POST the JSON and print the response
 response = requests.post(URL, auth=(AUTHID, AUTHPW), headers=HEADERS, data=json_payload)
 
+# If the POST succeeds, the response is the new object in JSON format
 print json.dumps(response.json(), indent=4, separators=(',', ': '))
 
-''' check the status code and if good, extract the accession number of the new object'''
+# Check the status code and if good, extract the accession number of the new object'''
 if not response.status_code == 201:
-	#deal with the error
-	import sys
 	print >> sys.stderr, response.text
 else:
 	response_dict = response.json()
