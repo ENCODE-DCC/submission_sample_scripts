@@ -1,27 +1,36 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: latin-1 -*-
-'''PATCH an object on an ENCODE server'''
-
+'''PATCH an object array on an ENCODE server'''
+ 
 import sys, requests, json
-
-# Indicate that the content sent to the server is JSON
-# Force return from the server in JSON format
+ 
+# Send and accept JSON format
 HEADERS = {'content-type': 'application/json', 'accept': 'application/json'}
 
 # Authentication is always required to PATCH ENCODE objects
-AUTHID = "H7OL67B4" #<- Replace with your keypair, available from your ENCODE wrangler
-AUTHPW = "lr5gz2fjowbaqox5" #<- Replace with your keypair, available from your ENCODE wrangler
-
+AUTHID = "H7OL67B4" #<- Replace this with your keypair
+AUTHPW = "lr5gz2fjowbaqox5" #<- Replace this with your keypair
+ 
 # This URL locates the ENCODE experiment with accession number ENCSR000AJT
 URL = "https://test.encodedcc.org/experiments/ENCSR000AJT/"
-
-# Create the JSON to send to the server
+ 
+# GET the object we'll be PATCH'ing
+response = requests.get(URL, auth=(AUTHID, AUTHPW), headers=HEADERS)
+experiment = response.json()
+ 
+# Extract the aliases array from the JSON object
+alias_array = experiment['aliases']
+ 
+# Append our new alias to the array
+alias_array.remove('test:some_unique_string') #<- This must be a unique string.
+ 
+# Construct the JSON payload
 payload_dict = {
-	"description": "Originally Caltech ChIP-Seq mouse C2C12 EqS_2.0pct_60hr Control_36bp" #Originally Caltech ChIP-Seq mouse C2C12 EqS_2.0pct_60hr Control_36bp
+	"aliases": alias_array
 }
 json_payload = json.dumps(payload_dict)
-
-# Send the request to the server
+ 
+# Do the PATCH and parse the response
 response = requests.patch(URL, auth=(AUTHID, AUTHPW), headers=HEADERS, data=json_payload)
 
 # Process the response
