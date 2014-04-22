@@ -37,7 +37,7 @@ response = requests.post(URL, auth=(AUTHID, AUTHPW), headers=HEADERS, data=json_
 # If the POST succeeds, the response is the new object in JSON format
 print json.dumps(response.json(), indent=4, separators=(',', ': '))
 
-# Check the status code and if good, extract the accession number of the new object'''
+# Check the status code and if good, extract the accession number of the new object
 if not response.status_code == 201:
 	print >> sys.stderr, response.text
 else:
