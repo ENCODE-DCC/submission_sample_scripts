@@ -18,3 +18,10 @@ response_json_dict = response.json()
 
 # Print the object
 print json.dumps(response_json_dict, indent=4, separators=(',', ': '))
+
+biosample = response_json_dict
+
+for doc_URI in biosample['protocol_documents']:
+	doc_response = requests.get('https://test.encodedcc.org/'+doc_URI, headers=HEADERS)
+	document = doc_response.json()
+	print document['description']
