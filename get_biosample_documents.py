@@ -8,7 +8,7 @@ import requests, json
 HEADERS = {'accept': 'application/json'}
 
 # This URL locates the ENCODE biosample with accession number ENCBS000AAA
-URL = "https://www.encodedcc.org/biosample/ENCBS000AAA/?frame=object"
+URL = "https://www.encodedcc.org/biosamples/ENCBS000AAA/?frame=object"
 
 # GET the object
 response = requests.get(URL, headers=HEADERS)
@@ -22,6 +22,6 @@ print json.dumps(response_json_dict, indent=4, separators=(',', ': '))
 biosample = response_json_dict
 
 for doc_URI in biosample['protocol_documents']:
-	doc_response = requests.get('https://test.encodedcc.org/'+doc_URI, headers=HEADERS)
+	doc_response = requests.get('https://www.encodedcc.org/'+doc_URI, headers=HEADERS)
 	document = doc_response.json()
 	print document['description']
