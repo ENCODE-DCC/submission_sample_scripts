@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: latin-1 -*-
 '''GET an ENCODE antibody lot object'''
 
@@ -9,11 +9,11 @@ import json
 
 '''store the ENCODE server address and an authorization keypair'''
 '''create the keypair from persona or get one from your wrangler'''
-SERVER = 'http://test.encodedcc.org'
+SERVER = 'https://test.encodedcc.org'
 AUTHID = 'access_key_id'
 AUTHPW = 'secret_access_key'
 '''force return from the server in JSON format'''
-HEADERS = {'content-type': 'application/json'}
+HEADERS = {'accept': 'application/json'}
 
 def get_ENCODE(obj_id):
     '''GET an ENCODE object as JSON and return as dict'''
@@ -26,7 +26,7 @@ def get_ENCODE(obj_id):
 
 if __name__ == "__main__":
 
-    '''GET the ENCODE object using it's resource name'''
+    '''GET the ENCODE object using its resource name'''
     antibody_lot = get_ENCODE('/antibody-lots/ENCAB000AUX/')
 
     '''extract some fields from the ENCODE object'''

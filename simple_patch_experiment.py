@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: latin-1 -*-
 '''PATCH the description field of an ENCODE experiment'''
 
@@ -9,11 +9,11 @@ import json
 
 '''store the ENCODE server address and the authorization keypair'''
 '''create the keypair from persona or get one from your wrangler'''
-SERVER = 'http://test.encodedcc.org'
+SERVER = 'https://test.encodedcc.org'
 AUTHID = 'access_key_id'
 AUTHPW = 'secret_access_key'
-'''force return from the server in JSON format'''
-HEADERS = {'content-type': 'application/json'}
+'''pass JSON to the server and force return from the server in JSON format'''
+HEADERS = {'content-type': 'application/json', 'accept': 'application/json'}
 
 '''build a URL that points to an ENCODE object'''
 URL = SERVER+'/experiments/ENCSR000AJT/'

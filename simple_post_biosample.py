@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: latin-1 -*-
 '''Create a new ENCODE biosample object'''
 
@@ -13,12 +13,12 @@ import pprint
 
 '''store the ENCODE server address and an authorization keypair'''
 '''create the keypair from persona or get one from your wrangler'''
-SERVER = 'http://your_server.encodedcc.org' #replace with your server URL
+SERVER = 'https://test.encodedcc.org' #replace with your server URL
 AUTHID = 'your_access_key_id'               #replace with your access_key_id
 AUTHPW = 'your_secret_access_key'           #replace with your secret_access_key
 
-'''force return from the server in JSON format'''
-HEADERS = {'content-type': 'application/json'}
+'''pass JSON to the server and force return from the server in JSON format'''
+HEADERS = {'content-type': 'application/json', 'accept': 'application/json'}
 
 def get_ENCODE(obj_id):
     '''GET an ENCODE object as JSON and return as dict'''
@@ -32,7 +32,7 @@ def patch_ENCODE(obj_id, patch_json):
     '''PATCH an existing ENCODE object and return the response JSON'''
     url = SERVER+obj_id
     json_payload = json.dumps(patch_json)
-    response = requests.patch(url, auth=(AUTHID, AUTHPW), data=json_payload)
+    response = requests.patch(url, auth=(AUTHID, AUTHPW), , headers=HEADERS, data=json_payload)
     print "Patch:"
     print response.status_code
     if not response.status_code == 200:
@@ -71,7 +71,6 @@ if __name__ == "__main__":
         'derived_from':         ['ENCBS016ENC'],
         'description':          'Some free-text description of this arbitrary nonsensical test biosample',
         'donor':                'ENCDO000HUM', #you would not normally use this generic donor object, but rather object for the real donor
-        #'encode2_dbxrefs':      None,
         'health_status':        'Some free-text description of the health of the donor at the time of donation.',
         'lab':                  'j-michael-cherry',
         'life_stage':           'adult',
