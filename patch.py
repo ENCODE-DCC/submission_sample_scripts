@@ -13,7 +13,7 @@ AUTHID = "ABCDEFG" #<- Replace this with your keypair
 AUTHPW = "myspecialsecret" #<- Replace this with your keypair
 
 # This URL locates the ENCODE experiment with accession number ENCSR000AJT
-URL = "https://test.encodedcc.org/experiments/ENCSR000AFV/"
+URL = "https://test.encodedcc.org/experiments/ENCSR000AJT/"
 
 # Create the JSON to send to the server
 payload_dict = {
