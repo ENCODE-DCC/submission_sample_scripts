@@ -8,8 +8,8 @@ import sys, requests, json
 HEADERS = {'content-type': 'application/json', 'accept': 'application/json'}
 
 # Authentication is always required to PATCH ENCODE objects
-AUTHID = "H7OL67B4" #<- Replace this with your keypair
-AUTHPW = "lr5gz2fjowbaqox5" #<- Replace this with your keypair
+AUTHID = "ABCDEFG" #<- Replace this with your keypair
+AUTHPW = "myspecialsecret" #<- Replace this with your keypair
  
 # This URL locates the ENCODE experiment with accession number ENCSR000AJT
 URL = "https://test.encodedcc.org/experiments/ENCSR000AJT/"
