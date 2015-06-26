@@ -8,7 +8,7 @@ import requests, json
 HEADERS = {'accept': 'application/json'}
 
 # This URL locates the ENCODE biosample with accession number ENCBS000AAA
-URL = "https://www.encodedcc.org/biosamples/ENCBS000AAA/?frame=object"
+URL = "https://www.encodeproject.org/biosamples/ENCBS000AAA/?frame=object"
 
 # GET the object
 response = requests.get(URL, headers=HEADERS)
